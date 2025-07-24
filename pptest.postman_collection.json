@@ -1,0 +1,219 @@
+{
+	"info": {
+		"_postman_id": "5dfb85f0-aaf1-40b9-bb86-7b77480b3dd0",
+		"name": "pptest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47030404",
+		"_collection_link": "https://purrpurrpurr-6165431.postman.co/workspace/794cbe69-a7bd-4782-8057-26ebabd7c755/collection/47030404-5dfb85f0-aaf1-40b9-bb86-7b77480b3dd0?action=share&source=collection_link&creator=47030404"
+	},
+	"item": [
+		{
+			"name": "Create a new user and verify id returned is in numerical format",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"// Test the response body structure and values\r",
+							"pm.test(\"Verify id contains numeric values where expected\", function () {\r",
+							"    pm.expect(jsonData).to.have.property('id').that.is.a('number');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"pptest\",\r\n    \"gender\": \"female\",\r\n    \"email\": \"pptest@abc.com\",\r\n    \"status\": \"active\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify status for first entry is only either \"active\" or \"inactive\"",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verify status for first entry is only either \\\"active\\\" or \\\"inactive\\\"\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var firstItem = jsonData[0];\r",
+							"    pm.expect(firstItem['status']).to.eql(\"active\") || pm.expect(firstItem['status']).to.eql(\"inactive\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "to cleanup: Extract first ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Extract first item\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"  var firstItem = responseData[0];\r",
+							"  pm.collectionVariables.set(\"userId\", firstItem['id'])\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users/",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						""
+					]
+				},
+				"description": "Just want to erase the data created."
+			},
+			"response": []
+		},
+		{
+			"name": "to cleanup: Delete the first new user created",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users/{{userId}}",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "c740b3cb1d9fdeb6350be5c7cdfe8c18c5ffef141b73b60e5e26d6b34b1948aa",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
